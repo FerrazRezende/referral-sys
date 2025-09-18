@@ -25,7 +25,6 @@ class DatabaseManager
         ]);
     }
 
-
     public static function healthCheck(): array
     {
         try {
@@ -81,7 +80,6 @@ class DatabaseManager
         return $tables;
     }
 
-
     public static function getStats(): array
     {
         try {
@@ -105,7 +103,6 @@ class DatabaseManager
         $results = [];
 
         try {
-
             $tables = ['users', 'binary_tree_structure', 'referrals', 'points_history', 'referral_codes'];
 
             foreach ($tables as $table) {
@@ -151,9 +148,7 @@ class DatabaseManager
                 $issues[] = 'Invalid referrals: '.count($invalidReferrals);
             }
 
-            $rootCount = (int) Connection::query("
-                SELECT COUNT(*) FROM binary_tree_structure WHERE position = 'root'
-            ")->fetchColumn();
+            $rootCount = (int) Connection::query("\n                SELECT COUNT(*) FROM binary_tree_structure WHERE position = 'root'\n            ")->fetchColumn();
 
             if ($rootCount > 1) {
                 $issues[] = "Multiple roots found: {$rootCount}";
@@ -172,3 +167,5 @@ class DatabaseManager
         }
     }
 }
+
+
