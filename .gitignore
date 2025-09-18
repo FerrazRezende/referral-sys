@@ -1,0 +1,36 @@
+# Dependencies
+/vendor/
+/node_modules/
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Generated files
+/public/css/style.css
+/public/js/main.js
+
+# Logs
+/logs/*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker volumes
+mysql_data/
+
+# Cache
+/cache/
+/tmp/
+
+# Testing
+/phpunit.xml
+/.phpunit.result.cache
