@@ -28,7 +28,7 @@ services:
     environment:
       - DB_HOST=${DB_HOST}
       - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
+      - DB_USER=root
       - DB_PASS=${DB_PASS}
       - APP_ENV=${APP_ENV}
       - APP_DEBUG=${APP_DEBUG}
@@ -45,7 +45,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASS}
       MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USER}
     volumes:
       - mysql_data:/var/lib/mysql
       - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql

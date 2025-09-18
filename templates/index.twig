@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Referral System - Árvore Binária</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    #tree {
+      display: flex;
+      justify-content: center;
+    }
+    .node-card {
+      padding: 16px 20px;
+      background: white;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      min-width: 120px;
+      text-align: center;
+      display: inline-block;
+      position: relative;
+      z-index: 1;
+    }
+    #tree ul {
+      padding-top: 20px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+    #tree li {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      padding: 0 10px;
+    }
+    #tree li::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      height: 20px;
+      background-color: #9ca3af;
+    }
+    #tree li::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background-color: #9ca3af;
+    }
+    #tree li .node-card::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      height: 20px;
+      background-color: #9ca3af;
+    }
+    #tree > ul > li::before,
+    #tree > ul > li::after {
+      display: none;
+    }
+    #tree li.tree-leaf .node-card::after {
+      display: none;
+    }
+    #tree li:first-child::after {
+      left: 50%;
+      width: 50%;
+    }
+    #tree li:last-child::after {
+      left: 0;
+      width: 50%;
+    }
+    #tree li:only-child::after {
+      display: none;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="max-w-6xl mx-auto p-6">
+    <h1 class="text-2xl font-bold mb-4">Árvore Binária de Indicação</h1>
+
+    {% if message %}
+      <div class="mb-4 p-3 rounded bg-green-100 text-green-800">{{ message }}</div>
+    {% endif %}
+    {% if error %}
+      <div class="mb-4 p-3 rounded bg-red-100 text-red-800">{{ error }}</div>
+    {% endif %}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-white rounded-lg border p-4">
+        <h2 class="text-lg font-semibold mb-3">Adicionar Usuário</h2>
+        <form method="POST" id="form-add-user" class="space-y-3">
+          <div>
+            <label class="text-sm">Nome</label>
+            <input class="w-full border rounded px-3 py-2" type="text" name="name" placeholder="Nome do usuário" required />
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-sm">Pontos iniciais</label>
+              <input class="w-full border rounded px-3 py-2" type="number" name="points" min="0" value="0" required />
+            </div>
+            <div>
+              <label class="text-sm">Indicador (referrer_id)</label>
+              <select class="w-full border rounded px-3 py-2" name="referrer_id" required>
+                <option value="">Selecione...</option>
+                {% for u in allUsers %}
+                  <option value="{{ u.id }}">{{ u.id }} - {{ u.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <input type="hidden" name="add_user" value="1" />
+          <button class="bg-blue-600 hover:bg-blue-700 text-white rounded px-4 py-2" type="submit">Adicionar</button>
+        </form>
+      </div>
+
+      <div class="bg-white rounded-lg border p-4">
+        <h2 class="text-lg font-semibold mb-3">Placar do Usuário 1</h2>
+        <p><span class="font-medium">Usuário:</span> {{ scoreboard.user_name }}</p>
+        <p><span class="font-medium">Lado esquerdo:</span> {{ scoreboard.left_points }} pts</p>
+        <p><span class="font-medium">Lado direito:</span> {{ scoreboard.right_points }} pts</p>
+        <p class="text-xs text-gray-500 mt-1">Somatório recursivo dos nós de cada lado.</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg border p-4 mt-6">
+      <h2 class="text-lg font-semibold mb-4">Visualização da Árvore</h2>
+      <div id="tree" class="overflow-auto p-8"></div>
+    </div>
+
+    <div class="bg-white rounded-lg border p-4 mt-6">
+      <h2 class="text-lg font-semibold mb-3">Usuários</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead>
+            <tr class="border-b">
+              <th class="text-left p-2">#ID</th>
+              <th class="text-left p-2">Nome</th>
+              <th class="text-left p-2">Pontos</th>
+              <th class="text-left p-2">Criado em</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in allUsers %}
+            <tr class="border-b">
+              <td class="p-2">{{ u.id }}</td>
+              <td class="p-2">{{ u.name }}</td>
+              <td class="p-2">{{ u.current_points }}</td>
+              <td class="p-2">{{ u.created_at|default('—') }}</td>
+            </tr>
+            {% else %}
+            <tr>
+              <td class="p-2" colspan="4">Nenhum usuário cadastrado.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const treeData = {{ tree|json_encode|raw }};
+    
+    function renderNode(node) {
+      if (!node) {
+        return `
+          <li class="tree-leaf is-empty">
+            <div class="node-card bg-gray-100 text-gray-400 border-dashed">
+              <div class="text-sm">Vazio</div>
+            </div>
+          </li>
+        `;
+      }
+
+      const hasChildren = node.left || node.right;
+      let childrenHtml = '';
+      
+      if (hasChildren) {
+        const leftChild = node.left ? renderNode(node.left) : renderNode(null);
+        const rightChild = node.right ? renderNode(node.right) : renderNode(null);
+
+        childrenHtml = `
+          <ul>
+            ${leftChild}
+            ${rightChild}
+          </ul>
+        `;
+      }
+      
+      const liClass = hasChildren ? "" : "tree-leaf";
+      
+      return `
+        <li class="${liClass}">
+          <div class="node-card">
+            <div class="text-sm font-medium">${node.name}</div>
+            <div class="text-xs text-gray-600 mt-1">${node.points} pts</div>
+          </div>
+          ${childrenHtml}
+        </li>
+      `;
+    }
+    
+    $(function() {
+      if (treeData) {
+        $('#tree').html(`<ul>${renderNode(treeData)}</ul>`);
+      } else {
+        $('#tree').html('<div class="text-gray-500 text-center py-8">Árvore vazia.</div>');
+      }
+    });
+  </script>
+</body>
+</html>
