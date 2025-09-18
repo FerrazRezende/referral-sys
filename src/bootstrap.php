@@ -2,6 +2,9 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+use ReferralSystem\Database\DatabaseManager;
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__.'/..');
 $dotenv->load();
@@ -16,7 +19,6 @@ date_default_timezone_set('America/Sao_Paulo');
 
 header('Content-Type: text/html; charset=UTF-8');
 
-use ReferralSystem\Database\DatabaseManager;
 
 try {
     DatabaseManager::initialize();
@@ -67,9 +69,6 @@ if (! function_exists('json_response')) {
         exit;
     }
 }
-
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 
 $loader = new FilesystemLoader(__DIR__ . '/../templates');
 $twig = new Environment($loader, [

@@ -16,12 +16,12 @@ class DatabaseManager
         }
 
         Connection::configure([
-            'host' => $_ENV['DB_HOST'] ?? 'localhost',
-            'port' => $_ENV['DB_PORT'] ?? '3306',
-            'database' => $_ENV['DB_NAME'] ?? 'referral_system',
-            'username' => $_ENV['DB_USER'] ?? 'root',
-            'password' => $_ENV['DB_PASS'] ?? '',
-            'charset' => $_ENV['DB_CHARSET'] ?? 'utf8mb4',
+            'host' => $_ENV['DB_HOST'],
+            'port' => $_ENV['DB_PORT'],
+            'database' => $_ENV['DB_NAME'],
+            'username' => $_ENV['DB_USER'],
+            'password' => $_ENV['DB_PASS'],
+            'charset' => $_ENV['DB_CHARSET'],
         ]);
     }
 
