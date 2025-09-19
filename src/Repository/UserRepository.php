@@ -62,4 +62,12 @@ class UserRepository extends BaseRepository
 
         return null;
     }
+
+    public function countUsers(): int
+    {
+        $sql = 'SELECT COUNT(*) FROM users';
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return (int) $stmt->fetchColumn();
+    }
 }

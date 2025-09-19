@@ -1,51 +1,26 @@
-# Sistema de Indicação com Árvore Binária
+# Desafio
 
-## 📋 Descrição
+O desafio consistia em fazer um sistema de indicação que tivesse uma rede para somar os pontos, essa rede precisaria ser na estrutura de arvore binária
 
-Sistema de indicação que implementa uma estrutura de árvore binária para gerenciar usuários e seus pontos acumulados. O sistema permite adicionar usuários à rede de indicação seguindo a regra de alocação da esquerda para direita, e calcula automaticamente os pontos totais de cada lado da árvore.
+No caso de uso, deve ser possível cadastrar 3 usuários no sistema, o primeiro usuário que se cadastrar será o topo da árvore (root), o segundo usuário deverá ser alocado ao lado esquerdo do root (left), e o terceiro usuário ao lado direito (right). Cada nó das extremidades da árvore deverá somar na pontuação do nó raiz. 
 
-## 🎯 Caso de Uso
+# Solução
 
-- **Usuário 1**: Primeiro usuário se torna a raiz da árvore
-- **Usuário 2**: Indicado pelo usuário 1, alocado à esquerda (200 pontos)
-- **Usuário 3**: Indicado pelo usuário 1, alocado à direita (100 pontos)
-- **Placar**: Usuário 1 tem 200 pontos à esquerda e 100 pontos à direita
+O projeto foi estruturado em uma **Arquitetura em Camadas**, separando claramente as responsabilidades de apresentação (Twig), lógica de negócio (Services) e acesso a dados (Repositories). 
 
-## 🏗️ Arquitetura
+Para a modelagem da rede de referências hierárquica, o padrão de projeto [**Composite**](https://refactoring.guru/pt-br/design-patterns/composite) foi a escolha natural. Ele permitiu compor os usuários em uma estrutura de árvore, onde a principal vantagem é a capacidade de processar tanto um nó individual quanto uma sub-rede inteira de forma uniforme. Essa funcionalidade foi implementada através de uma função **recursiva** que percorre a árvore para agregar os pontos totais de cada ramo.
 
-### Padrão Composite
+Dada a especificidade do projeto, optei por uma implementação "pura" (vanilla), sem a utilização de um framework full-stack. Isso evitou o overhead de componentes desnecessários (como ORM, migrations, etc.), resultando em uma aplicação mais leve e direta ao ponto.
 
-O sistema implementa o **Padrão Composite** para representar a estrutura hierárquica da árvore binária:
+Para demonstrar práticas modernas de desenvolvimento, a aplicação foi totalmente containerizada com **Docker**, utilizando um banco de dados **MySQL** para a persistência dos dados.
 
-```php
-interface UserComponent {
-    public function calculatePoints(): int;
-}
+## Esquema do banco de dados
 
-class User implements UserComponent {
-    private ?UserComponent $leftChild = null;
-    private ?UserComponent $rightChild = null;
-    
-    public function calculatePoints(): int {
-        $totalPoints = $this->points;
-        if ($this->leftChild !== null) {
-            $totalPoints += $this->leftChild->calculatePoints();
-        }
-        if ($this->rightChild !== null) {
-            $totalPoints += $this->rightChild->calculatePoints();
-        }
-        return $totalPoints;
-    }
-}
-```
+Plataforma: [DrawDB](https://www.drawdb.app)
 
-**Benefícios do Composite:**
-- Tratamento uniforme de nós individuais e subárvores
-- Cálculo recursivo de pontos de forma transparente
-- Facilita extensões futuras (ex: diferentes tipos de nós)
-- Segue o princípio de responsabilidade única
+<img src="https://i.ibb.co/MxvD8CpM/Captura-de-tela-2025-09-18-224147.png">
 
-### Estrutura do Projeto
+## Estrutura do projeto
 
 ```
 src/
@@ -62,98 +37,62 @@ src/
     └── DatabaseManager.php # Gerenciamento do banco
 ```
 
-## 🗄️ Banco de Dados
+## Requisitos funcionais
 
-### Tabelas
-
-- **users**: Dados dos usuários (id, name, current_points)
-- **binary_tree_structure**: Estrutura da árvore (user_id, parent_id, position, level)
-- **referrals**: Relacionamento de indicações (referrer_id, referred_id)
-- **points_history**: Histórico de pontos (user_id, points, operation, description)
-
-### Schema
-
-```sql
-CREATE TABLE users (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL,
-    current_points INT DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE binary_tree_structure (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT NOT NULL,
-    parent_id INT NULL,
-    position ENUM('root', 'left', 'right') NOT NULL,
-    level INT DEFAULT 0,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (parent_id) REFERENCES users(id)
-);
-```
-
-## 🚀 Tecnologias
-
-- **PHP 8.3+** com PSR-4 autoload
-- **Composer** para gerenciamento de dependências
-- **MySQL 8.0** como banco de dados
-- **Twig** para templates
-- **Tailwind CSS** para estilização
-- **jQuery** para interações frontend
-- **Docker** para containerização
-
-## 🛠️ Instalação
-
-1. **Clone o repositório**
-```bash
-git clone <repository-url>
-cd referral-sys
-```
-
-2. **Configure as variáveis de ambiente**
-```bash
-cp .env.example .env
-# Edite o .env com suas configurações
-```
-
-3. **Suba os containers**
-```bash
-docker compose up -d --build
-```
-
-4. **Acesse a aplicação**
-```
-http://localhost:8080
-```
-
-## 📱 Funcionalidades
-
-### Interface Web
 - **Visualização da árvore**: Representação gráfica da estrutura binária
 - **Formulário de cadastro**: Adicionar novos usuários à rede
 - **Placar em tempo real**: Pontos acumulados por lado da árvore
 - **Lista de usuários**: Todos os usuários cadastrados
 
-### Regras de Negócio
+## Requisitos não funcionais
+
+- **PHP 8.3+** com PSR-4 autoload
+- **Composer** para gerenciamento de dependências
+- **MySQL 8.0** como banco de dados
+- **Twig** para templates
+- **Tailwind CSS** para estilização
+- **jQuery** para interações frontend
+- **Docker** para containerização
+
+## Requisitos de domínio
+
 - **Alocação automática**: Usuários são alocados da esquerda para direita
 - **Cálculo recursivo**: Pontos são somados recursivamente na árvore
-- **Validação de posições**: Impede alocação em posições já ocupadas
 - **Transações**: Operações atômicas para consistência dos dados
 
-## 🧪 Testes
+## Vídeo de explicação:
 
-O sistema inclui dados de exemplo (seed) que demonstram o caso de uso:
-- Usuário 1 como raiz
-- Usuário 2 à esquerda com 200 pontos
-- Usuário 3 à direita com 100 pontos
+## Como rodar o projeto
 
-## 📚 Referências
+1. **Clone o repositório**
+
+```bash
+git clone <repository-url>
+cd referral-sys
+```
+
+1. **Configure as variáveis de ambiente**
+
+```bash
+cp .env.example .env
+```
+
+1. **Suba os containers**
+
+```bash
+docker compose up -d --build
+```
+
+1. **Acesse a aplicação**
+
+```
+http://localhost:8080
+```
+
+## Considerações finais
+
+## **Referências**
 
 - [Padrão Composite - Refactoring Guru](https://refactoring.guru/design-patterns/composite)
-- [PSR-4 Autoloader](https://www.php-fig.org/psr/psr-4/)
 - [Twig Template Engine](https://twig.symfony.com/)
 - [Tailwind CSS](https://tailwindcss.com/)
-
-## 👨‍💻 Desenvolvedor
-
-Sistema desenvolvido como teste técnico, implementando boas práticas de desenvolvimento, padrões de design e arquitetura limpa.

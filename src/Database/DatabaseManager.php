@@ -98,74 +98,7 @@ class DatabaseManager
         }
     }
 
-    public static function maintenance(): array
-    {
-        $results = [];
 
-        try {
-            $tables = ['users', 'binary_tree_structure', 'referrals', 'points_history', 'referral_codes'];
-
-            foreach ($tables as $table) {
-                Connection::query("OPTIMIZE TABLE {$table}");
-                $results['optimized'][] = $table;
-            }
-
-            Connection::query('ANALYZE TABLE users, binary_tree_structure, referrals, points_history, referral_codes');
-            $results['analyzed'] = true;
-
-            $results['status'] = 'success';
-            $results['message'] = 'Maintenance executed successfully';
-
-        } catch (Exception $e) {
-            $results['status'] = 'error';
-            $results['message'] = 'Error in maintenance: '.$e->getMessage();
-        }
-
-        return $results;
-    }
-
-    public static function validateIntegrity(): array
-    {
-        $issues = [];
-
-        try {
-            $orphanNodes = Connection::query('
-                SELECT user_id FROM binary_tree_structure 
-                WHERE user_id NOT IN (SELECT id FROM users)
-            ')->fetchAll();
-
-            if (! empty($orphanNodes)) {
-                $issues[] = 'Orphan nodes in the tree: '.count($orphanNodes);
-            }
-
-            $invalidReferrals = Connection::query('
-                SELECT id FROM referrals 
-                WHERE referrer_id NOT IN (SELECT id FROM users) 
-                OR referred_id NOT IN (SELECT id FROM users)
-            ')->fetchAll();
-
-            if (! empty($invalidReferrals)) {
-                $issues[] = 'Invalid referrals: '.count($invalidReferrals);
-            }
-
-            $rootCount = (int) Connection::query("\n                SELECT COUNT(*) FROM binary_tree_structure WHERE position = 'root'\n            ")->fetchColumn();
-
-            if ($rootCount > 1) {
-                $issues[] = "Multiple roots found: {$rootCount}";
-            }
-
-            return [
-                'status' => empty($issues) ? 'valid' : 'issues_found',
-                'issues' => $issues,
-            ];
-
-        } catch (Exception $e) {
-            return [
-                'status' => 'error',
-                'message' => 'Error in validation: '.$e->getMessage(),
-            ];
-        }
-    }
 }
 
 
