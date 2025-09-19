@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_points'])) {
             (int) $_POST['user_id'],
             (int) $_POST['new_points']
         );
-        $viewData['message'] = "Points updated successfully!";
+        $viewData['message'] = "Pontos atualizados com sucesso!";
     } catch (Exception $e) {
         $viewData['error'] = $e->getMessage();
     }

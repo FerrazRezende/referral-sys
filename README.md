@@ -71,19 +71,25 @@ git clone <repository-url>
 cd referral-sys
 ```
 
-1. **Configure as variáveis de ambiente**
+2. **Configure as variáveis de ambiente**
 
 ```bash
 cp .env.example .env
 ```
 
-1. **Suba os containers**
+3. **Instale as dependências**
+
+```bash
+composer install
+```
+
+4. **Suba os containers**
 
 ```bash
 docker compose up -d --build
 ```
 
-1. **Acesse a aplicação**
+5. **Acesse a aplicação**
 
 ```
 http://localhost:8080

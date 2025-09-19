@@ -6,7 +6,7 @@ CREATE TABLE users (
     name VARCHAR(255) NOT NULL,
     current_points INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE binary_tree_structure (
@@ -18,7 +18,7 @@ CREATE TABLE binary_tree_structure (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (parent_id) REFERENCES users(id) ON DELETE CASCADE,
-    UNIQUE KEY unique_user (user_id),
+    UNIQUE KEY unique_user (user_id)
 );
 
 CREATE TABLE points_history (
@@ -28,7 +28,7 @@ CREATE TABLE points_history (
     operation ENUM('add', 'set', 'subtract') NOT NULL,
     description VARCHAR(255) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE referrals (
