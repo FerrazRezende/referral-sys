@@ -61,7 +61,7 @@ src/
 - **Transações**: Operações atômicas para consistência dos dados
 
 ## Vídeo de explicação:
-
+https://youtu.be/PnjiSIS5CKI
 ## Como rodar o projeto
 
 1. **Clone o repositório**
@@ -96,7 +96,11 @@ http://localhost:8080
 ```
 
 ## Considerações finais
+Este projeto me proporcionou a oportunidade de revisitar matérias de Estruturas de Dados e Design Patterns que estudei na faculdade, o que foi muito gratificante. Me senti à vontade com a maioria dos conceitos, mas resolvi ir além. Implementei uma arquitetura em camadas e adicionei algumas funcionalidades que considero comuns no Laravel, como o `dd` (dump and die) e transactions no banco de dados para manter a atomicidade.
 
+Além disso, utilizei inteligência artificial no frontend para gerar a representação gráfica da árvore, assim como em algumas consultas técnicas que me ajudaram a implementar funcionalidades típicas do Laravel. A IA também foi fundamental na criação da documentação do projeto.
+
+Estou extremamente satisfeito com o resultado final e espero que esse projeto seja a minha porta de entrada na GoDev.
 ## **Referências**
 
 - [Padrão Composite - Refactoring Guru](https://refactoring.guru/design-patterns/composite)
