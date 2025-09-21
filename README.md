@@ -61,7 +61,7 @@ src/
 - **Transações**: Operações atômicas para consistência dos dados
 
 ## Vídeo de explicação:
-https://youtu.be/PnjiSIS5CKI
+[https://youtu.be/PnjiSIS5CKI](https://www.youtube.com/watch?v=vg07qq7h1Go)
 ## Como rodar o projeto
 
 1. **Clone o repositório**
@@ -105,4 +105,5 @@ Estou extremamente satisfeito com o resultado final e espero que esse projeto se
 
 - [Padrão Composite - Refactoring Guru](https://refactoring.guru/design-patterns/composite)
 - [Twig Template Engine](https://twig.symfony.com/)
+
 - [Tailwind CSS](https://tailwindcss.com/)
